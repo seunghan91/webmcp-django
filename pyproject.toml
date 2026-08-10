@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "webmcp-django"
+version = "0.1.0"
+description = "Django toolkit for WebMCP (W3C Web Model Context Protocol) — early development."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "seunghan Kim", email = "theqwe2000@gmail.com" },
+]
+keywords = ["webmcp", "mcp", "ai-agents", "django", "origin-trial"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "Django>=4.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/seunghan91/webmcp-django"
+Repository = "https://github.com/seunghan91/webmcp-django"
+
+[tool.hatch.build.targets.wheel]
+packages = ["webmcp_django"]
