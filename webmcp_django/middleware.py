@@ -1,12 +1,16 @@
 """Origin-Trial header middleware for WebMCP.
 
-Chrome's WebMCP origin trial (Chrome 149-156) requires participating
-origins to serve an `Origin-Trial` response header containing a token
-issued for the origin. This middleware adds that header when a token is
-configured, and is a no-op otherwise.
+Adds a configured Origin-Trial token without replacing existing headers.
 """
 
+import logging
+from threading import Lock
+
 from django.conf import settings
+
+_warning_lock = Lock()
+_warned_oac = False
+logger = logging.getLogger("webmcp_django")
 
 
 class OriginTrialMiddleware:
@@ -25,8 +29,15 @@ class OriginTrialMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        global _warned_oac
         response = self.get_response(request)
         token = getattr(settings, "WEBMCP_ORIGIN_TRIAL_TOKEN", None)
         if token:
             response.headers.setdefault("Origin-Trial", token)
+            if (getattr(settings, "WEBMCP_WARN_ON_OAC_OPT_OUT", False)
+                    and response.headers.get("Origin-Agent-Cluster") == "?0"):
+                with _warning_lock:
+                    if not _warned_oac:
+                        logger.warning("WebMCP: Origin-Agent-Cluster: ?0 may cause SecurityError in older Origin-Trial builds; header left unchanged")
+                        _warned_oac = True
         return response

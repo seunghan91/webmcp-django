@@ -23,7 +23,13 @@ at request time from data a visitor controls.
 """
 
 from django import template
+from django.conf import settings
+from django.middleware.csrf import get_token
+from django.templatetags.static import static
 from django.utils.html import escape, format_html
+
+from webmcp_django import manifest
+from webmcp_django.tools import get_tool, validate_name
 
 register = template.Library()
 
@@ -39,6 +45,7 @@ def webmcp_tool(tool_name, description, autosubmit=False):
     rendering, so a pre-marked-safe (`mark_safe`) value cannot bypass
     escaping.
     """
+    validate_name(tool_name)
     tool_name = escape(tool_name)
     description = escape(description)
     if autosubmit:
@@ -65,3 +72,46 @@ def webmcp_param(description):
     pre-marked-safe (`mark_safe`) value cannot bypass escaping.
     """
     return format_html('toolparamdescription="{}"', escape(description))
+
+
+def _request(context):
+    return getattr(context, "request", None) or context.get("request")
+
+
+@register.simple_tag(takes_context=True)
+def webmcp_manifest(context, *names, autostart=True, transport=None):
+    """Expose only explicitly named tools on this page."""
+    return manifest.to_script_tag(
+        manifest.build([get_tool(name) for name in names], transport=transport),
+        autostart=autostart,
+        nonce=getattr(_request(context), "csp_nonce", None),
+    )
+
+
+@register.simple_tag(takes_context=True)
+def webmcp_runtime(context):
+    """Load the shared external ES module through Django's static storage."""
+    src = escape(static("webmcp_django/webmcp-runtime.js"))
+    nonce = getattr(_request(context), "csp_nonce", None)
+    if nonce is not None:
+        return format_html('<script type="module" src="{}" nonce="{}"></script>', src, escape(nonce))
+    return format_html('<script type="module" src="{}"></script>', src)
+
+
+@register.simple_tag
+def webmcp_origin_trial_meta():
+    """Render the configured token, or nothing when no token is configured."""
+    token = getattr(settings, "WEBMCP_ORIGIN_TRIAL_TOKEN", "")
+    if not token:
+        return ""
+    return format_html('<meta http-equiv="origin-trial" content="{}">', escape(token))
+
+
+@register.simple_tag(takes_context=True)
+def webmcp_csrf_meta(context):
+    """Expose a masked CSRF token, including with HttpOnly CSRF cookies."""
+    request = _request(context)
+    token = get_token(request) if request is not None else context.get("csrf_token", "")
+    if token == "NOTPROVIDED":
+        token = ""
+    return format_html('<meta name="csrf-token" content="{}">', escape(token))

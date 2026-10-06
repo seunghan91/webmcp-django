@@ -1,5 +1,8 @@
+import pytest
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
+
+from webmcp_django.tools import DefinitionError
 
 
 def render(template_string, **context):
@@ -23,8 +26,8 @@ def test_webmcp_tool_autosubmit():
 def test_webmcp_tool_escapes_values():
     output = render(
         '{% webmcp_tool tool_name description %}',
-        tool_name='"><script>alert(1)</script>',
-        description="plain",
+        tool_name="create_task",
+        description='"><script>alert(1)</script>',
     )
 
     assert "<script>" not in output
@@ -34,8 +37,8 @@ def test_webmcp_tool_escapes_values():
 def test_webmcp_tool_escapes_safe_string():
     output = render(
         '{% webmcp_tool tool_name description %}',
-        tool_name=mark_safe("<script>alert(1)</script>"),
-        description="plain",
+        tool_name=mark_safe("create_task"),
+        description=mark_safe("<script>alert(1)</script>"),
     )
 
     assert "<script>" not in output
@@ -53,3 +56,9 @@ def test_webmcp_param_escapes_safe_string():
 
     assert "<b>" not in output
     assert "&lt;b&gt;" in output
+
+
+@pytest.mark.parametrize("name", ["", "two words", "a" * 129, "bad\n", mark_safe("<script>")])
+def test_webmcp_tool_rejects_invalid_name(name):
+    with pytest.raises(DefinitionError, match="tool name"):
+        render('{% webmcp_tool name "Description" %}', name=name)

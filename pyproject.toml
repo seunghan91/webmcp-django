@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "webmcp-django"
-version = "0.1.0"
+version = "0.2.0"
 description = "Django toolkit for WebMCP (W3C Web Model Context Protocol) — early development."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "seunghan Kim", email = "theqwe2000@gmail.com" },
 ]
@@ -24,7 +24,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -33,8 +32,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "Django>=4.2",
+    "Django>=4.2,<6",
 ]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
 
 [project.urls]
 Homepage = "https://github.com/seunghan91/webmcp-django"
@@ -42,3 +44,10 @@ Repository = "https://github.com/seunghan91/webmcp-django"
 
 [tool.hatch.build.targets.wheel]
 packages = ["webmcp_django"]
+
+# Hatch includes package data in both artifacts; keep the runtime explicit.
+[tool.hatch.build.targets.wheel.force-include]
+"webmcp_django/static/webmcp_django/webmcp-runtime.js" = "webmcp_django/static/webmcp_django/webmcp-runtime.js"
+
+[tool.hatch.build.targets.sdist]
+include = ["webmcp_django", "tests", "conformance", "README.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"]
