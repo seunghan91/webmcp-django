@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "webmcp-django"
-version = "0.2.0"
-description = "Django toolkit for WebMCP (W3C Web Model Context Protocol) — early development."
+version = "0.2.1"
+description = "Server-side WebMCP toolkit for Django: tool registry, script-safe manifests, shared browser runtime, CSRF and Origin-Trial template tags."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -41,6 +41,8 @@ test = ["pytest>=7"]
 [project.urls]
 Homepage = "https://github.com/seunghan91/webmcp-django"
 Repository = "https://github.com/seunghan91/webmcp-django"
+Changelog = "https://github.com/seunghan91/webmcp-django/blob/main/CHANGELOG.md"
+Issues = "https://github.com/seunghan91/webmcp-django/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["webmcp_django"]

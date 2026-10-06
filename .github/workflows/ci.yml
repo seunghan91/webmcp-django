@@ -1,0 +1,21 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - { python: "3.10", django: "4.2" }
+          - { python: "3.12", django: "5.1" }
+          - { python: "3.13", django: "5.2" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install "Django~=${{ matrix.django }}.0" -e ".[test]"
+      - run: pytest -q

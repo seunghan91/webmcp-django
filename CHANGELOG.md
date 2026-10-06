@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 — 2026-10-06
+
+- Documentation and packaging metadata: PyPI summary no longer says "early development"; README leads with what the package does, install, status and the four-package family; changelog/issue links; CI. No code changes.
+
 ## 0.2.0 — 2026-10-06
 
 - Add frozen, validated Tool definitions and an explicit page-selected registry.

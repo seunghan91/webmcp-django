@@ -1,8 +1,42 @@
 # webmcp-django
 
-0.2.0 · Spec baseline: **WebMCP Draft CG Report 2026-10-02**.
-Django helpers for manifest v1 and the shared browser runtime. Python/framework
-tests do not establish live browser, CSP or production compatibility.
+[![PyPI](https://img.shields.io/pypi/v/webmcp-django)](https://pypi.org/project/webmcp-django/) [![Python](https://img.shields.io/pypi/pyversions/webmcp-django)](https://pypi.org/project/webmcp-django/) [![CI](https://github.com/seunghan91/webmcp-django/actions/workflows/ci.yml/badge.svg)](https://github.com/seunghan91/webmcp-django/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Server-side WebMCP toolkit for Django — Django is the only dependency.
+
+[WebMCP](https://github.com/webmachinelearning/webmcp) is a W3C Community Group
+proposal that lets a web page register tools an in-browser AI agent can call
+through `document.modelContext`. This package is the server side of that: you define
+tools where your app already knows its routes, sessions and permissions, and a
+small browser runtime registers them on the pages you choose. When an agent calls
+a tool, the runtime calls your existing same-origin endpoint with the user's
+session and CSRF token, so authentication and authorization stay in your app.
+
+- **Tool definitions** — `webmcp_django.tools.Tool` and `register`, validated against the spec's naming, annotation and schema rules.
+- **Template tags** — `{% webmcp_manifest "list_tasks" %}` (per-page opt-in), `{% webmcp_runtime %}` (CSP nonce aware, autostart), `{% webmcp_csrf_meta %}` (works with `CSRF_COOKIE_HTTPONLY`).
+- **Declarative forms** — `{% webmcp_tool %}` and `{% webmcp_param %}` with unconditional escaping.
+- **Origin Trial** — `OriginTrialMiddleware` and `{% webmcp_origin_trial_meta %}`.
+- **Shared browser runtime** — shipped as a static file; same-origin only, CSRF read per call, declared parameters only, no retries.
+
+```sh
+pip install webmcp-django
+```
+
+**Status:** 0.x, tracking the WebMCP Draft CG Report of 2026-10-02. WebMCP runs
+behind a Chrome origin trial (Chrome 149–156, extension requested to 162) or the
+`chrome://flags/#enable-webmcp-testing` flag. The shared runtime is tested in real
+Chrome 154 by the [Ruby reference suite](https://github.com/seunghan91/webmcp/blob/main/test/integration/RESULTS.md)
+(CSRF-protected writes, blocked redirects, HTTP errors, Turbo navigation, strict CSP).
+
+| Language | Package | Registry |
+|---|---|---|
+| Ruby / Rails (reference) | [`webmcp`](https://github.com/seunghan91/webmcp) | [RubyGems](https://rubygems.org/gems/webmcp) |
+| Go (`net/http`) | [`webmcp-go`](https://github.com/seunghan91/webmcp-go) | [pkg.go.dev](https://pkg.go.dev/github.com/seunghan91/webmcp-go) |
+| Python / Django | [`webmcp-django`](https://github.com/seunghan91/webmcp-django) | [PyPI](https://pypi.org/project/webmcp-django/) |
+| Rust | [`webmcp`](https://github.com/seunghan91/webmcp-rust) | [crates.io](https://crates.io/crates/webmcp) |
+
+All four emit the same manifest v1 (checked against shared conformance fixtures,
+fingerprints included) and ship the byte-identical browser runtime.
 
 ## Intent: share identity, project the rest explicitly
 
