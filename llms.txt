@@ -1,0 +1,33 @@
+# webmcp-django (Python / Django)
+
+> Server-side WebMCP toolkit for Django: validated tool registry, per-page script-safe manifest template tags, the shared browser runtime as a static file, a CSRF meta tag that works with HttpOnly CSRF cookies, declarative form tags and Origin Trial middleware.
+
+- Spec baseline: WebMCP Draft Community Group Report, 2026-10-02 (https://webmachinelearning.github.io/webmcp/). Browser API: `document.modelContext.registerTool()`, `getTools()`, `executeTool()` (formerly `navigator.modelContext`, deprecated in Chrome 150; the runtime falls back to it).
+- Install: `pip install webmcp-django`, add `"webmcp_django"` to `INSTALLED_APPS` next to `django.contrib.staticfiles`, and set `STATIC_URL`. In production also set `STATIC_ROOT`, run `python manage.py collectstatic` and serve the collected files; check that the URL emitted by `{% webmcp_runtime %}` returns `webmcp_django/webmcp-runtime.js` as JavaScript.
+- Requirements: Python >= 3.10, Django 4.2 LTS or 5.x; Django is the only dependency.
+- Registry: [PyPI](https://pypi.org/project/webmcp-django/). License: MIT. Status: 0.x.
+- Browser support: Chrome 149+ via origin trial (149–156, extension requested to 162) or `chrome://flags/#enable-webmcp-testing`. Verified in Chrome 154.
+- Not an MCP server library: WebMCP tools run in the user's browser tab. For desktop/CLI agents use an MCP SDK.
+- Public API: `webmcp_django.tools.Tool`, `register`, `get_tool`, `freeze_registry`, `DefinitionError`; template tags (`{% load webmcp %}`) `webmcp_manifest`, `webmcp_runtime`, `webmcp_csrf_meta`, `webmcp_origin_trial_meta`, `webmcp_tool`, `webmcp_param`; middleware `webmcp_django.middleware.OriginTrialMiddleware`; settings `WEBMCP_ORIGIN_TRIAL_TOKEN`, `WEBMCP_WARN_ON_OAC_OPT_OUT`.
+
+## Docs
+
+- [README](https://github.com/seunghan91/webmcp-django/blob/main/README.md): what it does, install, quick start, intent, security model, troubleshooting
+- [AGENTS.md](https://github.com/seunghan91/webmcp-django/blob/main/AGENTS.md): integration recipe, invariants, verification for coding agents
+- [Security model](https://github.com/seunghan91/webmcp-django/blob/main/README.md#security-model): same-origin endpoints, no redirects, per-call CSRF, declared parameters only, outcome envelopes, no retries
+- [Troubleshooting](https://github.com/seunghan91/webmcp-django/blob/main/README.md#troubleshooting): exact error messages and fixes
+- [Conformance fixtures](https://github.com/seunghan91/webmcp-django/tree/main/conformance): shared manifest v1 fixtures and the pinned runtime hash
+- [CHANGELOG](https://github.com/seunghan91/webmcp-django/blob/main/CHANGELOG.md)
+
+## Related packages (same manifest v1 and runtime)
+
+- [webmcp (Ruby / Rails, reference)](https://github.com/seunghan91/webmcp): RubyGems `webmcp`
+- [webmcp-go (Go)](https://github.com/seunghan91/webmcp-go): `github.com/seunghan91/webmcp-go`
+- [webmcp-django (Python / Django)](https://github.com/seunghan91/webmcp-django): PyPI `webmcp-django`
+- [webmcp-rust (Rust)](https://github.com/seunghan91/webmcp-rust): crates.io `webmcp`
+
+## Optional
+
+- [WebMCP explainer](https://github.com/webmachinelearning/webmcp): the W3C proposal
+- [Chrome WebMCP docs](https://developer.chrome.com/docs/ai/webmcp): origin trial, imperative and declarative APIs, security guidance
+- [Real-browser test report](https://github.com/seunghan91/webmcp/blob/main/test/integration/RESULTS.md): Chrome 154 results for the shared runtime

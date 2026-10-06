@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "webmcp-django"
-version = "0.2.1"
+version = "0.2.2"
 description = "Server-side WebMCP toolkit for Django: tool registry, script-safe manifests, shared browser runtime, CSRF and Origin-Trial template tags."
 readme = "README.md"
 license = "MIT"
@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [
     { name = "seunghan Kim", email = "theqwe2000@gmail.com" },
 ]
-keywords = ["webmcp", "mcp", "ai-agents", "django", "origin-trial"]
+keywords = ["webmcp", "django", "ai-agents", "browser-agents", "model-context-protocol", "document.modelContext", "origin-trial", "mcp"]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Environment :: Web Environment",

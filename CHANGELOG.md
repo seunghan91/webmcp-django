@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 — 2026-10-06
+
+- Documentation for people and AI agents: `AGENTS.md`, `llms.txt`, a README troubleshooting table with exact error messages, and more PyPI keywords. No behaviour changes.
+
 ## 0.2.1 — 2026-10-06
 
 - Documentation and packaging metadata: PyPI summary no longer says "early development"; README leads with what the package does, install, status and the four-package family; changelog/issue links; CI. No code changes.
